@@ -1,10 +1,9 @@
-'use strict'
+'use strict';
 
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 import iziToast from 'izitoast';
 import 'izitoast/dist/css/iziToast.min.css';
-
 
 const input = document.querySelector('#datetime-picker');
 const startBtn = document.querySelector('button[data-start]');
@@ -21,18 +20,17 @@ const options = {
   defaultDate: new Date(),
   minuteIncrement: 1,
   onClose(selectedDates) {
-      const selectedDate = selectedDates[0];
-      if (selectedDate <= new Date) {
-          startBtn.disabled = true;
-          iziToast.error({
-            message: 'Please choose a date in the future',
-            position: 'center'
-          });
-      }
-      else {
-          userSelectedDate = selectedDate;
-          startBtn.disabled = false;
-      }
+    const selectedDate = selectedDates[0];
+    if (selectedDate <= new Date()) {
+      startBtn.disabled = true;
+      iziToast.error({
+        message: 'Please choose a date in the future',
+        position: 'center',
+      });
+    } else {
+      userSelectedDate = selectedDate;
+      startBtn.disabled = false;
+    }
   },
 };
 
@@ -41,41 +39,39 @@ flatpickr('#datetime-picker', options);
 startBtn.addEventListener('click', handleStart);
 
 function handleStart(event) {
-    event.preventDefault;
-    startBtn.disabled = true;
-    input.disabled = true;
-    
-    const intervalID = setInterval(() => {
-        const dateNow = Date.now();
-        const difference = userSelectedDate - dateNow;
+  event.preventDefault;
+  startBtn.disabled = true;
+  input.disabled = true;
 
-        if (difference <= 0) {
-            clearInterval(intervalID);
-            startBtn.disabled = false;
-            input.disabled = false;
+  const intervalID = setInterval(() => {
+    const dateNow = Date.now();
+    const difference = userSelectedDate - dateNow;
 
-            days.innerHTML = '00';
-            hours.innerHTML = '00';
-            minutes.innerHTML = '00';
-            seconds.innerHTML = '00';
+    if (difference <= 0) {
+      clearInterval(intervalID);
+      startBtn.disabled = false;
+      input.disabled = false;
 
-            return;
-        }
-        const timeLeft = convertMs(difference);
+      days.innerHTML = '00';
+      hours.innerHTML = '00';
+      minutes.innerHTML = '00';
+      seconds.innerHTML = '00';
 
-        const day = pad(timeLeft.days);
-        const hour = pad(timeLeft.hours);
-        const minute = pad(timeLeft.minutes);
-        const second = pad(timeLeft.seconds);
+      return;
+    }
+    const timeLeft = convertMs(difference);
 
-        days.innerHTML = day;
-        hours.innerHTML = hour;
-        minutes.innerHTML = minute;
-        seconds.innerHTML = second;
-    }, 1000);
+    const day = pad(timeLeft.days);
+    const hour = pad(timeLeft.hours);
+    const minute = pad(timeLeft.minutes);
+    const second = pad(timeLeft.seconds);
+
+    days.innerHTML = day;
+    hours.innerHTML = hour;
+    minutes.innerHTML = minute;
+    seconds.innerHTML = second;
+  }, 1000);
 }
-
-
 
 function convertMs(ms) {
   // Number of milliseconds per unit of time
